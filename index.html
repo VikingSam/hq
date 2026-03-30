@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚔️ Viking Ops HQ</title>
+  <style>
+    :root {
+      --bg:        #0a0e1a;
+      --bg2:       #0e1320;
+      --bg3:       #121826;
+      --border:    rgba(255,255,255,0.08);
+      --text:      #e8eaf0;
+      --muted:     #7a85a0;
+      --green:     #22c55e;
+
+      /* Section accent colors */
+      --reports:   #f59e0b;
+      --content:   #8b5cf6;
+      --agents:    #06b6d4;
+      --sites:     #22c55e;
+      --quick:     #f43f5e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────── */
+    header {
+      position: relative;
+      padding: 36px 24px 28px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #070b14 0%, var(--bg2) 100%);
+    }
+
+    /* Norse knot SVG pattern via CSS repeating-linear-gradient */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(45deg,  #c8a84b 0px, #c8a84b 1px, transparent 1px, transparent 18px),
+        repeating-linear-gradient(-45deg, #c8a84b 0px, #c8a84b 1px, transparent 1px, transparent 18px),
+        repeating-linear-gradient(0deg,   #c8a84b 0px, #c8a84b 1px, transparent 1px, transparent 18px),
+        repeating-linear-gradient(90deg,  #c8a84b 0px, #c8a84b 1px, transparent 1px, transparent 18px);
+      pointer-events: none;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 200px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--reports), transparent);
+    }
+
+    .header-rune {
+      font-size: 3rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 20px rgba(245,158,11,0.5));
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-top: 8px;
+      background: linear-gradient(135deg, #f59e0b 0%, #fde68a 40%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── SEARCH ──────────────────────────────────────────── */
+    .search-wrap {
+      max-width: 520px;
+      margin: 28px auto 0;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px 12px 40px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #search::placeholder { color: var(--muted); }
+
+    #search:focus {
+      border-color: rgba(245,158,11,0.4);
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.08);
+    }
+
+    /* ─── MAIN CONTENT ────────────────────────────────────── */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ─── SECTION ─────────────────────────────────────────── */
+    .section { margin-bottom: 40px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── GRID ────────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    /* ─── CARD ────────────────────────────────────────────── */
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 18px 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s, background 0.18s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      background: #161d2e;
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    /* accent glow on hover — set via JS / data attr */
+    .card[data-accent="reports"]:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 4px 24px rgba(245,158,11,0.1); }
+    .card[data-accent="content"]:hover  { border-color: rgba(139,92,246,0.4); box-shadow: 0 4px 24px rgba(139,92,246,0.1); }
+    .card[data-accent="agents"]:hover   { border-color: rgba(6,182,212,0.4);  box-shadow: 0 4px 24px rgba(6,182,212,0.1); }
+    .card[data-accent="sites"]:hover    { border-color: rgba(34,197,94,0.4);  box-shadow: 0 4px 24px rgba(34,197,94,0.1); }
+    .card[data-accent="quick"]:hover    { border-color: rgba(244,63,94,0.4);  box-shadow: 0 4px 24px rgba(244,63,94,0.1); }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .card-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .card-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(34,197,94,0.7);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #f0f2f8;
+    }
+
+    .card p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .card-meta {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      color: rgba(122,133,160,0.7);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    .card-arrow {
+      position: absolute;
+      right: 16px;
+      bottom: 14px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.15s, right 0.15s;
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      right: 12px;
+    }
+
+    /* ─── HIDDEN (search) ─────────────────────────────────── */
+    .card.hidden { display: none; }
+
+    /* section hidden when all cards hidden */
+    .section.hidden { display: none; }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 600px) {
+      header { padding: 28px 16px 22px; }
+      main   { padding: 20px 12px 48px; }
+      .grid  { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .card  { padding: 14px 12px 12px; }
+      .card-icon { font-size: 1.2rem; }
+      .card h3   { font-size: 0.85rem; }
+      .card p    { font-size: 0.73rem; }
+    }
+
+    @media (max-width: 380px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────── -->
+<header>
+  <div class="header-rune">⚔️</div>
+  <h1>Viking Ops HQ</h1>
+  <p>Command Center · Sam Ridgeway</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search cards..." autocomplete="off" spellcheck="false">
+  </div>
+</header>
+
+<!-- ─── MAIN ───────────────────────────────────────────── -->
+<main>
+
+  <!-- ══ DAILY REPORTS & DASHBOARDS ══════════════════════ -->
+  <section class="section" id="sec-reports">
+    <div class="section-header">
+      <div class="section-dot" style="background:#f59e0b;box-shadow:0 0 6px rgba(245,158,11,0.6)"></div>
+      <h2>📊 Daily Reports &amp; Dashboards</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://dusty-canyon-fr3s.here.now/" target="_blank" rel="noopener" data-accent="reports" data-title="FR44 Daily Report">
+        <div class="card-top">
+          <span class="card-icon">📋</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>FR44 Daily Report</h3>
+        <p>Lead pipeline, response times, agent performance, AdWords delta</p>
+        <div class="card-meta" id="fr44-ts">Refreshed daily · auto-pulls at 7am CT</div>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://lemon-fossil-6dc6.here.now/" target="_blank" rel="noopener" data-accent="reports" data-title="AdWords The Holy One">
+        <div class="card-top">
+          <span class="card-icon">📈</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>AdWords "The Holy One"</h3>
+        <p>Campaign performance, keyword costs, conversion tracking, spend vs. leads</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://vikingsam.github.io/token-dashboard/" target="_blank" rel="noopener" data-accent="reports" data-title="Token Spend Dashboard">
+        <div class="card-top">
+          <span class="card-icon">🪙</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>Token Spend Dashboard</h3>
+        <p>Anthropic API cost tracking, model breakdown, daily spend trends</p>
+        <div class="card-meta" id="token-ts">Refreshes 6am · noon · 5pm CT</div>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ══ CONTENT OPERATIONS ═══════════════════════════════ -->
+  <section class="section" id="sec-content">
+    <div class="section-header">
+      <div class="section-dot" style="background:#8b5cf6;box-shadow:0 0 6px rgba(139,92,246,0.6)"></div>
+      <h2>🎬 Content Operations</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://airtable.com/apphRVhGXOrjVMRNn/tbl6kEAiyaNYrtViO" target="_blank" rel="noopener" data-accent="content" data-title="Shorts Tracker">
+        <div class="card-top">
+          <span class="card-icon">🎞️</span>
+          <span class="card-badge" style="color:#8b5cf6">Airtable</span>
+        </div>
+        <h3>Shorts Tracker</h3>
+        <p>Short-form pipeline — ideas, scripts, recording status, posting schedule</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://airtable.com/apphRVhGXOrjVMRNn/tbl3Yy2ytpdUMpOv5" target="_blank" rel="noopener" data-accent="content" data-title="Video Hopper">
+        <div class="card-top">
+          <span class="card-icon">🎬</span>
+          <span class="card-badge" style="color:#8b5cf6">Airtable</span>
+        </div>
+        <h3>Video Hopper</h3>
+        <p>Full-length video queue — 💡 Idea → ✍️ Scripted → 📹 Recorded → ✅ Posted</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://placid-timber-yknq.here.now/" target="_blank" rel="noopener" data-accent="content" data-title="Ops Calendar">
+        <div class="card-top">
+          <span class="card-icon">📅</span>
+          <span class="card-badge"><span class="status-dot" style="background:#8b5cf6;box-shadow:0 0 6px rgba(139,92,246,0.7)"></span>Live</span>
+        </div>
+        <h3>Ops Calendar</h3>
+        <p>Publishing schedule, recording sessions, campaign milestones</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ══ AGENT OPERATIONS ══════════════════════════════════ -->
+  <section class="section" id="sec-agents">
+    <div class="section-header">
+      <div class="section-dot" style="background:#06b6d4;box-shadow:0 0 6px rgba(6,182,212,0.6)"></div>
+      <h2>🤖 Agent Operations</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://tidal-pebble-jxap.here.now/" target="_blank" rel="noopener" data-accent="agents" data-title="Automation Dashboard">
+        <div class="card-top">
+          <span class="card-icon">⚡</span>
+          <span class="card-badge"><span class="status-dot" style="background:#06b6d4;box-shadow:0 0 6px rgba(6,182,212,0.7)"></span>Live</span>
+        </div>
+        <h3>Automation Dashboard</h3>
+        <p>Active bots, cron schedules, task status, system health overview</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://airtable.com/apphRVhGXOrjVMRNn" target="_blank" rel="noopener" data-accent="agents" data-title="Bot Operations">
+        <div class="card-top">
+          <span class="card-icon">🤖</span>
+          <span class="card-badge" style="color:#06b6d4">Airtable</span>
+        </div>
+        <h3>Bot Operations</h3>
+        <p>Bot registry, playbooks, deployments, monitoring configs, QB activity log</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://urban-ledger-3t2a.here.now/" target="_blank" rel="noopener" data-accent="agents" data-title="Org Chart">
+        <div class="card-top">
+          <span class="card-icon">🗂️</span>
+          <span class="card-badge"><span class="status-dot" style="background:#06b6d4;box-shadow:0 0 6px rgba(6,182,212,0.7)"></span>Live</span>
+        </div>
+        <h3>Org Chart</h3>
+        <p>AI agent hierarchy — Blade, Em, Frank, Sheath, Bubba and the full crew</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ══ LIVE SITES ════════════════════════════════════════ -->
+  <section class="section" id="sec-sites">
+    <div class="section-header">
+      <div class="section-dot" style="background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.6)"></div>
+      <h2>🌐 Live Sites</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://vikingalternative.com" target="_blank" rel="noopener" data-accent="sites" data-title="Viking Alternative Medicine">
+        <div class="card-top">
+          <span class="card-icon">🧬</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>Viking Alternative Medicine</h3>
+        <p>HRT clinic — testosterone, peptides, methylene blue, 48-state reach</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://sr22coverage.com" target="_blank" rel="noopener" data-accent="sites" data-title="SR22 Coverage">
+        <div class="card-top">
+          <span class="card-icon">🚗</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>SR22 Coverage</h3>
+        <p>High-risk auto insurance filings — lead gen landing pages</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://myfloridafr44.com" target="_blank" rel="noopener" data-accent="sites" data-title="MyFloridaFR44">
+        <div class="card-top">
+          <span class="card-icon">🌴</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>MyFloridaFR44</h3>
+        <p>Florida FR44 filings — AdWords landing pages, GTM tracking active</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://fr44experts.com" target="_blank" rel="noopener" data-accent="sites" data-title="FR44 Experts">
+        <div class="card-top">
+          <span class="card-icon">📄</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>FR44 Experts</h3>
+        <p>Primary FR44 brand site — Bluehost hosted, WordPress</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://livelikeaviking.net" target="_blank" rel="noopener" data-accent="sites" data-title="LiveLikeAViking">
+        <div class="card-top">
+          <span class="card-icon">⚔️</span>
+          <span class="card-badge"><span class="status-dot"></span>Live</span>
+        </div>
+        <h3>LiveLikeAViking</h3>
+        <p>Lifestyle brand — content hub, Viking mindset, longevity</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ══ QUICK LINKS ════════════════════════════════════════ -->
+  <section class="section" id="sec-quick">
+    <div class="section-header">
+      <div class="section-dot" style="background:#f43f5e;box-shadow:0 0 6px rgba(244,63,94,0.6)"></div>
+      <h2>📬 Quick Links</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid">
+
+      <a class="card" href="https://fr44andsr22experts.radiusbob.com" target="_blank" rel="noopener" data-accent="quick" data-title="Radius CRM">
+        <div class="card-top">
+          <span class="card-icon">👥</span>
+        </div>
+        <h3>Radius CRM</h3>
+        <p>Online leads, agent assignments, client pipeline for FR44 &amp; SR22</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://ads.google.com" target="_blank" rel="noopener" data-accent="quick" data-title="Google Ads">
+        <div class="card-top">
+          <span class="card-icon">💰</span>
+        </div>
+        <h3>Google Ads</h3>
+        <p>Campaign management, bid adjustments, keyword performance, spend</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://app.3commas.io" target="_blank" rel="noopener" data-accent="quick" data-title="3Commas">
+        <div class="card-top">
+          <span class="card-icon">₿</span>
+        </div>
+        <h3>3Commas</h3>
+        <p>Crypto trading bots, P&amp;L monitoring, SmartTrades — ~$440K portfolio</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://platform.postiz.com" target="_blank" rel="noopener" data-accent="quick" data-title="Postiz">
+        <div class="card-top">
+          <span class="card-icon">📲</span>
+        </div>
+        <h3>Postiz</h3>
+        <p>Social scheduler — YouTube, TikTok, X, Facebook, Instagram via API</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+      <a class="card" href="https://qbo.intuit.com" target="_blank" rel="noopener" data-accent="quick" data-title="QuickBooks">
+        <div class="card-top">
+          <span class="card-icon">🧾</span>
+        </div>
+        <h3>QuickBooks</h3>
+        <p>Bank feeds, categorization, payroll matching — Viking &amp; FR44 companies</p>
+        <span class="card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  ⚔️ Viking Ops HQ · Built by Blade 🔪 · <span id="footer-ts"></span>
+</footer>
+
+<script>
+  // ─── TIMESTAMPS ──────────────────────────────────────────
+  function formatTs(d) {
+    return d.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+      timeZone: 'America/Chicago'
+    });
+  }
+
+  const now = new Date();
+  document.getElementById('footer-ts').textContent = 'Loaded ' + formatTs(now);
+
+  // ─── SEARCH ──────────────────────────────────────────────
+  const searchInput = document.getElementById('search');
+
+  searchInput.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    const sections = document.querySelectorAll('.section');
+
+    sections.forEach(sec => {
+      const cards = sec.querySelectorAll('.card');
+      let visCount = 0;
+
+      cards.forEach(card => {
+        const title = (card.dataset.title || card.querySelector('h3').textContent).toLowerCase();
+        const desc  = (card.querySelector('p') || {}).textContent?.toLowerCase() || '';
+        const match = !q || title.includes(q) || desc.includes(q);
+        card.classList.toggle('hidden', !match);
+        if (match) visCount++;
+      });
+
+      sec.classList.toggle('hidden', visCount === 0);
+    });
+  });
+
+  // Clear search on Escape
+  searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      this.value = '';
+      this.dispatchEvent(new Event('input'));
+    }
+  });
+</script>
+</body>
+</html>
